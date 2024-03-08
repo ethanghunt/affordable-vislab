@@ -10,7 +10,7 @@ map.on('load', function() {
   fetch('/features')
   .then(response => response.json())
   .then(function(features) {
-    console.log(features)
+    console.log("features", features)
     map.addSource('points', {
       type: 'geojson',
       data: features['points']
