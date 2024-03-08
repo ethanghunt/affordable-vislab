@@ -2,4 +2,4 @@ Install the python reqs into whatever virtual env you want (I used conda Python 
 
 Run router.py
 
-Go to /public/index.html to see the demo
+Go to localhost:8000

@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import uvicorn
 import pandas as pd
 from sklearn.cluster import HDBSCAN
 from alpha_shapes import Alpha_Shaper
 import random
 
-ALPHA = 1
+ALPHA = 0.5
 
 app = FastAPI()
 
@@ -19,10 +20,18 @@ def random_color(i = 4253766):
   r = lambda: random.randint(0, 255)
   return '#%02X%02X%02X' % (r(), r(), r())
 
+@app.get("/")
+async def root():
+  return FileResponse('views/index.html')
+
+@app.get("/contact")
+async def contact():
+  return FileResponse('views/contact.html')
+
 @app.get("/features")
 async def generate_features():
   features_out = {}
-  data = pd.read_csv("public/mockdata.csv")
+  data = pd.read_csv("public/data/mockdata.csv")
   data = data.drop_duplicates(subset=['lng', 'lat'])
   hdbscan = HDBSCAN(min_cluster_size=5, cluster_selection_method='leaf')
   data['cluster'] = hdbscan.fit_predict(data[['lng', 'lat']])
