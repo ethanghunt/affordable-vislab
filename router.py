@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.cluster import HDBSCAN
 from alpha_shapes import Alpha_Shaper
 import random
+from polylabel import polylabel
 
 ALPHA = 0.5
 
@@ -57,6 +58,7 @@ async def generate_features():
   }
   
   polygon_list = []
+  center_list = []
   cluster_group_df = data.groupby('cluster')
   for cluster, cluster_df in cluster_group_df:
     if cluster == -1:
@@ -64,7 +66,20 @@ async def generate_features():
     coords = cluster_df.apply(lambda x: (x['lng'], x['lat']), axis=1).tolist()
     shaper = Alpha_Shaper(coords)
     alpha_shape = shaper.get_shape(ALPHA)
-    alpha_shape = pd.DataFrame(alpha_shape.exterior.coords.xy).T.rename(columns={0: 'lng', 1: 'lat'})
+    alpha_shape_coords = [list(coord) for coord in alpha_shape.exterior.coords]
+    center_point = polylabel([alpha_shape_coords])
+    center = {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [center_point[0], center_point[1]]
+      },
+      "properties": {
+        "cluster": cluster,
+        "color": random_color(cluster)
+      }
+    }
+    center_list.append(center)
     polygon = {
       "type": "Feature",
       "properties": {
@@ -74,11 +89,15 @@ async def generate_features():
       "geometry": {
         "type": "Polygon",
         "coordinates": [
-          alpha_shape.values.tolist()
+          alpha_shape_coords
         ]
       }
     }
     polygon_list.append(polygon)
+  features_out['centers'] = {
+    "type": "FeatureCollection",
+    "features": center_list
+  }
   features_out['shapes'] = {
     "type": "FeatureCollection",
     "features": polygon_list
