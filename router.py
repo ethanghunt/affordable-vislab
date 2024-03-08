@@ -7,8 +7,12 @@ from sklearn.cluster import HDBSCAN
 from alpha_shapes import Alpha_Shaper
 import random
 from polylabel import polylabel
+import json
 
 ALPHA = 0.5
+MIN_CLUSTER_SIZE = 10
+
+hdbscan = HDBSCAN(min_cluster_size=MIN_CLUSTER_SIZE, cluster_selection_method='leaf')
 
 app = FastAPI()
 
@@ -32,9 +36,17 @@ async def contact():
 @app.get("/features")
 async def generate_features():
   features_out = {}
-  data = pd.read_csv("public/data/mockdata.csv")
+  
+  # Test dataset
+  # data = pd.read_csv("public/data/mockdata.csv")
+  
+  # Atlanta dataset
+  data = pd.read_csv("public/data/zillow_all_active_atlanta.csv")
+  data = data.rename(columns={'latitude': 'lat', 'longitude': 'lng'})
+  
   data = data.drop_duplicates(subset=['lng', 'lat'])
-  hdbscan = HDBSCAN(min_cluster_size=5, cluster_selection_method='leaf')
+  data = data.dropna(subset=['lng', 'lat'])
+  
   data['cluster'] = hdbscan.fit_predict(data[['lng', 'lat']])
   
   # generate points
@@ -64,6 +76,8 @@ async def generate_features():
     if cluster == -1:
       continue
     coords = cluster_df.apply(lambda x: (x['lng'], x['lat']), axis=1).tolist()
+    if len(coords) < 3:
+      continue
     shaper = Alpha_Shaper(coords)
     alpha_shape = shaper.get_shape(ALPHA)
     alpha_shape_coords = [list(coord) for coord in alpha_shape.exterior.coords]
@@ -72,7 +86,7 @@ async def generate_features():
       "type": "Feature",
       "geometry": {
         "type": "Point",
-        "coordinates": [center_point[0], center_point[1]]
+        "coordinates": [float(center_point[0]), float(center_point[1])]
       },
       "properties": {
         "cluster": cluster,

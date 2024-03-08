@@ -2,8 +2,8 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FsZHJvbiIsImEiOiJjbHRhYzltZG4wNDN1MmlsbThnO
 const map = new mapboxgl.Map({
 	container: 'mapbox', // container ID
 	style: 'mapbox://styles/mapbox/streets-v12', // style URL
-	center: [15, 43], // starting position [lng, lat]
-	zoom: 3.5, // starting zoom
+	center: [-84.5, 33.7], // starting position [lng, lat]
+	zoom: 9.6, // starting zoom
 });
 
 map.on('load', function() {
@@ -23,7 +23,7 @@ map.on('load', function() {
         'circle-radius': 5,
         'circle-color': ['get', 'color']
       },
-      minzoom: 5,
+      maxzoom: 5,
     });
     map.addSource('centers', {
       type: 'geojson',
