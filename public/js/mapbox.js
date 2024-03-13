@@ -4,13 +4,31 @@ const map = new mapboxgl.Map({
 	style: 'mapbox://styles/mapbox/streets-v12', // style URL
 	center: [-84.5, 33.7], // starting position [lng, lat]
 	zoom: 9.6, // starting zoom
+  maxBounds: [[-85.68856261783463, 33.2109980948708], [-83.10992717367886, 34.362195482591545]],
+  minZoom: 2,
 });
+
+
+function boundsFromPoints(points) {
+  const bounds = new mapboxgl.LngLatBounds();
+  points.forEach(point => {
+    bounds.extend(point);
+  });
+  return bounds;
+}
+
+function displayClusterInfo(cluster_data) {
+  console.log(cluster_data)
+}
 
 map.on('load', function() {
   fetch('/features')
   .then(response => response.json())
-  .then(function(features) {
+  .then(function(data) {
+    const features = data.features
+    const cluster_data = data.cluster_data
     console.log("features", features)
+
     map.addSource('points', {
       type: 'geojson',
       data: features['points']
@@ -23,7 +41,6 @@ map.on('load', function() {
         'circle-radius': 5,
         'circle-color': ['get', 'color']
       },
-      maxzoom: 5,
     });
     map.addSource('centers', {
       type: 'geojson',
@@ -60,6 +77,19 @@ map.on('load', function() {
         'line-width': 1.5,
         'line-opacity': 0.8
       }
+    });
+
+    map.on('click', 'shapes', (e) => {
+      const cluster_id = e.features[0].properties.cluster;
+      const cluster_polygon = features['shapes']
+        .features
+        .filter(feature => feature.properties.cluster === cluster_id)[0]
+        .geometry
+        .coordinates[0];
+      map.fitBounds(boundsFromPoints(cluster_polygon), {
+        padding: 50
+      });
+      displayClusterInfo(cluster_data[cluster_id]);
     });
   });
 });

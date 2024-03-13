@@ -53,6 +53,14 @@ body {
   border-bottom: solid var(--primary-color);
 }
 
+.data-vis-container {
+  --gap: 1rem;
+  display: grid;
+  gap: var(--gap);
+  grid-template-columns: min(calc(300px - var(--gap)/2), calc(30% - var(--gap)/2)) max(calc(100% - 300px - var(--gap)/2), calc(70% - var(--gap)/2));
+
+}
+
 #mapbox {
   width: 100%;
   height: 80vh;

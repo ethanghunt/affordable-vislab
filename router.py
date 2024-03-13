@@ -20,7 +20,7 @@ app.mount('/public', StaticFiles(directory='public'), name='public')
 
 def random_color(i = 4253766):
   if i == -1:
-    return "#eee"
+    return "#ddd"
   random.seed(i)
   r = lambda: random.randint(0, 255)
   return '#%02X%02X%02X' % (r(), r(), r())
@@ -46,6 +46,7 @@ async def generate_features():
   
   data = data.drop_duplicates(subset=['lng', 'lat'])
   data = data.dropna(subset=['lng', 'lat'])
+  data = data.fillna('N/A')
   
   data['cluster'] = hdbscan.fit_predict(data[['lng', 'lat']])
   
@@ -71,10 +72,14 @@ async def generate_features():
   
   polygon_list = []
   center_list = []
+  cluster_data = {}
   cluster_group_df = data.groupby('cluster')
   for cluster, cluster_df in cluster_group_df:
     if cluster == -1:
       continue
+    
+    cluster_data[cluster] = cluster_df.to_dict(orient='records')
+    
     coords = cluster_df.apply(lambda x: (x['lng'], x['lat']), axis=1).tolist()
     if len(coords) < 3:
       continue
@@ -116,7 +121,10 @@ async def generate_features():
     "type": "FeatureCollection",
     "features": polygon_list
   }
-  return features_out
+  return {
+    "features": features_out,
+    "cluster_data": cluster_data
+  }
 
 if __name__ == "__main__":
   uvicorn.run(app, host="localhost", port=8000)
