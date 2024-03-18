@@ -18,9 +18,17 @@ app = FastAPI()
 
 app.mount('/public', StaticFiles(directory='public'), name='public')
 
+city_map = {
+  'avondale est': 'avondale estates',
+  'east pt': 'east point',
+  'lithia spgs': 'lithia springs',
+}
+
 def random_color(i = 4253766):
   if i == -1:
     return "#ddd"
+  if i == 'atlanta':
+    return '#ddd'
   random.seed(i)
   r = lambda: random.randint(0, 255)
   return '#%02X%02X%02X' % (r(), r(), r())
@@ -32,6 +40,43 @@ async def root():
 @app.get("/contact")
 async def contact():
   return FileResponse('views/contact.html')
+
+@app.get('/neighborhoods')
+async def official_neighborhoods():
+  
+  houses = pd.read_csv('data/zillow_atlanta_with_neighborhood.csv')
+  houses.rename(columns={'latitude': 'lat', 'longitude': 'lng'}, inplace=True)
+  houses.dropna(subset=['lat', 'lng', 'neighborhood_id'], inplace=True)
+  houses = houses[['lat', 'lng', 'neighborhood_id', 'address_city']]
+  houses.address_city = houses.address_city.str.lower().replace(city_map)
+  
+  point_list = []
+  for i, row in houses.iterrows():
+    point = {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [row['lng'], row['lat']]
+      },
+      "properties": {
+        "cluster": row['neighborhood_id'],
+        "color": random_color(row['address_city']),
+        "opacity": 0.5
+      }
+    }
+    point_list.append(point)
+    points = {
+    "type": "FeatureCollection",
+    "features": point_list
+  }
+
+  with open('data/Official_Neighborhoods.geojson') as f:
+    neighborhoods = json.load(f)
+
+  return {
+    "houses": points,
+    "neighborhoods": neighborhoods
+  }
 
 @app.get("/features")
 async def generate_features():

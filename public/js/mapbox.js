@@ -22,74 +22,99 @@ function displayClusterInfo(cluster_data) {
 }
 
 map.on('load', function() {
-  fetch('/features')
+  fetch('/neighborhoods')
   .then(response => response.json())
   .then(function(data) {
-    const features = data.features
-    const cluster_data = data.cluster_data
-    console.log("features", features)
+    const houses = data.houses
+    const neighborhoods = data.neighborhoods
+    console.log("houses", houses)
 
-    map.addSource('points', {
+    map.addSource('houses', {
       type: 'geojson',
-      data: features['points']
+      data: houses
     });
     map.addLayer({
-      id: 'points',
+      id: 'houses',
       type: 'circle',
-      source: 'points',
+      source: 'houses',
       paint: {
         'circle-radius': 5,
-        'circle-color': ['get', 'color']
+        'circle-color': ['get', 'color'],
+        'circle-opacity': ['get', 'opacity']
       },
-    });
-    map.addSource('centers', {
-      type: 'geojson',
-      data: features['centers']
-    });
-    map.addLayer({
-      id: 'centers',
-      type: 'circle',
-      source: 'centers',
-      paint: {
-        'circle-radius': 5,
-        'circle-color': ['get', 'color']
-      }
-    });
-    map.addSource('shapes', {
-      type: 'geojson',
-      data: features['shapes']
-    });
-    map.addLayer({
-      id: 'shapes',
-      type: 'fill',
-      source: 'shapes',
-      paint: {
-        'fill-color': ['get', 'color'],
-        'fill-opacity': 0.2
-      }
-    });
-    map.addLayer({
-      id: 'shapes_line',
-      type: 'line',
-      source: 'shapes',
-      paint: {
-        'line-color': ['get', 'color'],
-        'line-width': 1.5,
-        'line-opacity': 0.8
-      }
-    });
-
-    map.on('click', 'shapes', (e) => {
-      const cluster_id = e.features[0].properties.cluster;
-      const cluster_polygon = features['shapes']
-        .features
-        .filter(feature => feature.properties.cluster === cluster_id)[0]
-        .geometry
-        .coordinates[0];
-      map.fitBounds(boundsFromPoints(cluster_polygon), {
-        padding: 50
-      });
-      displayClusterInfo(cluster_data[cluster_id]);
     });
   });
 });
+
+// map.on('load', function() {
+//   fetch('/features')
+//   .then(response => response.json())
+//   .then(function(data) {
+//     const features = data.features
+//     const cluster_data = data.cluster_data
+//     console.log("features", features)
+
+//     map.addSource('points', {
+//       type: 'geojson',
+//       data: features['points']
+//     });
+//     map.addLayer({
+//       id: 'points',
+//       type: 'circle',
+//       source: 'points',
+//       paint: {
+//         'circle-radius': 5,
+//         'circle-color': ['get', 'color']
+//       },
+//     });
+//     map.addSource('centers', {
+//       type: 'geojson',
+//       data: features['centers']
+//     });
+//     map.addLayer({
+//       id: 'centers',
+//       type: 'circle',
+//       source: 'centers',
+//       paint: {
+//         'circle-radius': 5,
+//         'circle-color': ['get', 'color']
+//       }
+//     });
+//     map.addSource('shapes', {
+//       type: 'geojson',
+//       data: features['shapes']
+//     });
+//     map.addLayer({
+//       id: 'shapes',
+//       type: 'fill',
+//       source: 'shapes',
+//       paint: {
+//         'fill-color': ['get', 'color'],
+//         'fill-opacity': 0.2
+//       }
+//     });
+//     map.addLayer({
+//       id: 'shapes_line',
+//       type: 'line',
+//       source: 'shapes',
+//       paint: {
+//         'line-color': ['get', 'color'],
+//         'line-width': 1.5,
+//         'line-opacity': 0.8
+//       }
+//     });
+
+//     map.on('click', 'shapes', (e) => {
+//       const cluster_id = e.features[0].properties.cluster;
+//       const cluster_polygon = features['shapes']
+//         .features
+//         .filter(feature => feature.properties.cluster === cluster_id)[0]
+//         .geometry
+//         .coordinates[0];
+//       map.fitBounds(boundsFromPoints(cluster_polygon), {
+//         padding: 50
+//       });
+//       displayClusterInfo(cluster_data[cluster_id]);
+//     });
+//   });
+// });
