@@ -4,8 +4,8 @@ const map = new mapboxgl.Map({
 	style: 'mapbox://styles/mapbox/streets-v12', // style URL
 	center: [-84.5, 33.7], // starting position [lng, lat]
 	zoom: 9.6, // starting zoom
-  maxBounds: [[-85.68856261783463, 33.2109980948708], [-83.10992717367886, 34.362195482591545]],
-  minZoom: 2,
+  // maxBounds: [[-85.68856261783463, 33.2109980948708], [-83.10992717367886, 34.362195482591545]],
+  // minZoom: 2,
 });
 
 
@@ -20,6 +20,28 @@ function boundsFromPoints(points) {
 function displayClusterInfo(cluster_data) {
   console.log(cluster_data)
 }
+
+// map.on('load', function() {
+//   fetch('/500k')
+//   .then(response => response.json())
+//   .then(function(data) {
+//     console.log(data)
+
+//     map.addSource('stat_areas', {
+//       type: 'geojson',
+//       data: data
+//     });
+//     map.addLayer({
+//       id: 'stat_areas',
+//       type: 'fill',
+//       source: 'stat_areas',
+//       paint: {
+//         'fill-color': ['get', 'color'],
+//         'fill-opacity': 0.2
+//       },
+//     });
+//   });
+// });
 
 map.on('load', function() {
   fetch('/neighborhoods')
@@ -42,6 +64,15 @@ map.on('load', function() {
         'circle-color': ['get', 'color'],
         'circle-opacity': ['get', 'opacity']
       },
+    });
+    map.on('click', 'houses', (e) => {
+      // select info-panel attribute
+      let region_id = e.features[0].properties.region_id;
+      let lng_lat = e.features[0].geometry.coordinates;
+      const info = document.getElementsByClassName('info-panel')[0];
+      console.log("region_id", e.features[0].properties.region_id)
+      console.log("lng_lat", lng_lat)
+      info.innerHTML = `${e.features[0].properties.region_id}<br>${lng_lat}`;
     });
   });
 });
