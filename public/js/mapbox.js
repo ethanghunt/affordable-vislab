@@ -48,7 +48,6 @@ map.on('load', function() {
   .then(response => response.json())
   .then(function(data) {
     const houses = data.houses
-    const neighborhoods = data.neighborhoods
     console.log("houses", houses)
 
     map.addSource('houses', {
