@@ -4,10 +4,10 @@ from fastapi.responses import FileResponse
 import uvicorn
 import pandas as pd
 from sklearn.cluster import HDBSCAN
-from alpha_shapes import Alpha_Shaper
 import random
-from polylabel import polylabel
-import json
+# from alpha_shapes import Alpha_Shaper
+# from polylabel import polylabel
+# import json
 
 ALPHA = 0.5
 MIN_CLUSTER_SIZE = 10
