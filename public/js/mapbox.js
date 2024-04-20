@@ -48,21 +48,65 @@ map.on('load', function() {
   .then(response => response.json())
   .then(function(data) {
     const houses = data.houses
+    const boundaries = data.boundaries
+    const subtracted_boundaries = data.subtracted_boundaries
+
+    console.log("boundaries", boundaries)
     console.log("houses", houses)
+    console.log("subtracted_boundaries", subtracted_boundaries)
 
     map.addSource('houses', {
       type: 'geojson',
       data: houses
     });
+    map.addSource('boundaries', {
+      type: 'geojson',
+      data: boundaries
+    });
+    map.addSource('subtracted_boundaries', {
+      type: 'geojson',
+      data: subtracted_boundaries
+    });
+    // map.addLayer({
+    //   id: 'houses',
+    //   type: 'circle',
+    //   source: 'houses',
+    //   paint: {
+    //     'circle-radius': 5,
+    //     'circle-color': ['get', 'color'],
+    //     'circle-opacity': ['get', 'opacity']
+    //   },
+    // });
+    // map.addLayer({
+    //   id: 'boundaries',
+    //   type: 'line',
+    //   source: 'boundaries',
+    //   paint: {
+    //     'line-color': ['get', 'color'],
+    //     'line-width': 1.5,
+    //     'line-opacity': 0.8,
+    //     'fill-opacity': 0.2,
+    //     'fill-color': 'red'
+    //   }
+    // });
     map.addLayer({
-      id: 'houses',
-      type: 'circle',
-      source: 'houses',
+      id: 'subtracted_boundaries',
+      type: 'line',
+      source: 'subtracted_boundaries',
       paint: {
-        'circle-radius': 5,
-        'circle-color': ['get', 'color'],
-        'circle-opacity': ['get', 'opacity']
-      },
+        'line-color': ['get', 'color'],
+        'line-width': 1.5,
+        'line-opacity': 0.8
+      }
+    });
+    map.addLayer({
+      id: 'subtracted_boundaries_fill',
+      type: 'fill',
+      source: 'subtracted_boundaries',
+      paint: {
+        'fill-color': ['get', 'color'],
+        'fill-opacity': 0.2
+      }
     });
     map.on('click', 'houses', (e) => {
       // select info-panel attribute

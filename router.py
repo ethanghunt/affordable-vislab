@@ -7,7 +7,7 @@ from sklearn.cluster import HDBSCAN
 import random
 # from alpha_shapes import Alpha_Shaper
 # from polylabel import polylabel
-# import json
+import json
 
 ALPHA = 0.5
 MIN_CLUSTER_SIZE = 10
@@ -67,9 +67,17 @@ async def official_neighborhoods():
     "type": "FeatureCollection",
     "features": point_list
   }
+    
+  with open('data/final/neighborhood_boundary.geojson', 'r') as f:
+    boundaries = json.load(f)
+  
+  with open('data/final/neighborhood_boundary_subtracted.geojson', 'r') as f:
+    subtracted_boundaries = json.load(f)
 
   return {
-    "houses": points
+    "houses": points,
+    "boundaries": boundaries,
+    "subtracted_boundaries": subtracted_boundaries
   }
 
 if __name__ == "__main__":
