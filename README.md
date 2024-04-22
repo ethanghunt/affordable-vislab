@@ -32,8 +32,6 @@ In addendum, this handles the merging of dispersed data files including merging 
 
 ## Data Scraping
 
-Handles the scraping from the Google API.
+Contains nearly all scraped files and data collection required for the reproducability. This includes compressed zillow scrape data, official neighborhood boundaries, the official Atlanta city boundary, and multitudes of region-specific datasets. In addition, it handles the scraping from the Google API.
 
-Other scraping methods are not detailed here since they lack fully automatic processes and felt exploitive.
-
-Also contains a plethora of scraped files used in unprovided, large notebooks.
+Other scraping methods are not detailed here since they lacked fully automatic processes, felt exploitive, or were not available by the time of code compilation (deleted).
