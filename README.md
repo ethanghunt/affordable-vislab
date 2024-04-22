@@ -1,5 +1,16 @@
-Install the python reqs into whatever virtual env you want (I used conda Python 3.10)
+# Affordable VisLab
 
-Run router.py
+A project to visualize house prices and affordabilty by neighborhoods and local regions.
 
-Go to localhost:8000
+## Run the demo
+
+Create a python virtual environment of your choice. Activate it. Ensure you are in the `demo` directory.
+
+```
+pip install -r requirements.txt
+```
+```
+python router.py
+```
+
+Navigate to `localhost:8000`.
