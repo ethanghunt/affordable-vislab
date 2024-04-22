@@ -1,0 +1,6 @@
+__pycache__/
+.DS_Store
+demo/data/old
+/notebooks
+demo/.DS_Store
+*.ipynb

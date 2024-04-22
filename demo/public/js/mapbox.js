@@ -1,4 +1,4 @@
-mapboxgl.accessToken = 'pk.eyJ1IjoiZ2FsZHJvbiIsImEiOiJjbHRhYzltZG4wNDN1MmlsbThnOWx2aHlsIn0.XnK4cKK9Xxbt-p0RQPm75g';
+mapboxgl.accessToken = MAPBOX_ACCESS_TOKEN_HERE;
 
 let hoveredPolygonId = null;
 
