@@ -2,7 +2,7 @@
 
 A project to visualize house prices and affordabilty by neighborhoods and local regions.
 
-Please note that not all the code used to generate this data and provide this experience is included. Many Jupyter notebooks and datasets were too large to include on Github. If you are interested in the methodology, please contact @ethanghunt.
+Please note that not all the code used to generate this data and provide this experience is included. Many Jupyter notebooks and datasets were too large to include on Github. If you are interested in the methodology, please contact [ethanghunt](https://github.com/ethanghunt).
 
 Thanks you to Mapbox for enabling this demo and continued development of their responsive mapping tool.
 
